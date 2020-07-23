@@ -2,9 +2,9 @@
   "name": "webcull-slack",
   "version": "1.0.0",
   "description": "Slack App for WebCull",
-  "main": "app.js",
+  "main": "src/app.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "node src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -14,6 +14,7 @@
   "author": "Chibuzor Enukoha",
   "license": "ISC",
   "devDependencies": {
+    "cross-env": "^7.0.2",
     "eslint": "^7.4.0",
     "eslint-config-prettier": "^6.11.0",
     "husky": "^4.2.5",
@@ -21,7 +22,15 @@
     "prettier": "2.0.5"
   },
   "dependencies": {
-    "@slack/bolt": "^2.1.1"
+    "@slack/bolt": "^2.1.1",
+    "axios": "^0.19.2",
+    "body-parser": "^1.19.0",
+    "dotenv-flow": "^3.2.0",
+    "ejs": "^3.1.3",
+    "keyv": "^4.0.1",
+    "qs": "^6.9.4",
+    "string-tokenizer": "0.0.8",
+    "url-regex": "^4.1.1"
   },
   "husky": {
     "hooks": {

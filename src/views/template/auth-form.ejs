@@ -1,0 +1,150 @@
+<div class="modal__background">
+    <div class="modal__window">
+
+        <form class="auth-form" name="form-auth" method="post">
+
+            <label class="auth-form__label">
+                <span class="auth-form__placeholder">email</span>
+                <input class="auth-form__input input-email" type="email" name="email" autocomplete="off" required>
+            </label>
+
+            <label class="auth-form__label">
+                <span class="auth-form__placeholder">password</span>
+                <input class="auth-form__input input-password" type="password" name="password" autocomplete="off"
+                    required>
+                <div class="auth-form__toggler">
+                    <i class="la la-eye auth-form__icon"></i>
+                    <input type="checkbox" class="auth-form__checkbox password-toggler">
+                </div>
+            </label>
+            <div id="error" class="auth-form__answer"></div>
+
+            <input class="auth-form__submit" type="submit" value="Login">
+            <div class="auth-form__bottom">
+                <span>Have no account?</span>
+                <a href="https://webcull.com/">Create new</a>
+            </div>
+
+        </form>
+        <div id="account" class="hidden">
+            <img class="avatar"
+                src="data:image/png;base64,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"
+                alt="" id="icon">
+            <div id="name" class="user-name">Name </div>
+            <a id="authLink">
+                <img alt="" Add Webcull to Slack"" height="40" width="139"
+                    src="https://platform.slack-edge.com/img/add_to_slack.png"
+                    srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" />
+            </a>
+        </div>
+
+    </div>
+</div>
+<script>
+    (function () {
+        const inputText = document.querySelectorAll(".auth-form__input");
+        inputText.forEach(function (input) {
+            input.addEventListener("focus", function () {
+                this.classList.add("focus");
+                this.parentElement
+                    .querySelector(".auth-form__placeholder")
+                    .classList.add("focus");
+            });
+            input.addEventListener("blur", function () {
+                this.classList.remove("focus");
+                if (!this.value) {
+                    this.parentElement
+                        .querySelector(".auth-form__placeholder")
+                        .classList.remove("focus");
+                }
+            });
+        });
+    })();
+    (function () {
+        const togglers = document.querySelectorAll(".password-toggler");
+        togglers.forEach(function (checkbox) {
+            checkbox.addEventListener("change", function () {
+                const toggler = this.parentElement,
+                    input = toggler.parentElement.querySelector(
+                        ".input-password"
+                    ),
+                    icon = toggler.querySelector(".auth-form__icon");
+
+                if (checkbox.checked) {
+                    input.type = "text";
+                    icon.classList.remove("la-eye");
+                    icon.classList.add("la-eye-slash");
+                } else {
+                    input.type = "password";
+                    icon.classList.remove("la-eye-slash");
+                    icon.classList.add("la-eye");
+                }
+            });
+        });
+    })();
+
+    (function () {
+        function validateEmail(email) {
+            const re =
+                /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(email);
+        }
+        document.forms["form-auth"].addEventListener("submit", function (e) {
+            e.preventDefault();
+            const errorContainer = document.getElementById("error"),
+                email = this.elements.email.value,
+                password = this.elements.password.value,
+                loader = document.getElementById('loader'),
+                placeholders = document.querySelectorAll(".auth-form__placeholder"),
+                form = this;
+
+            errorContainer.innerHTML = ''
+
+            if (!validateEmail(email)) {
+                placeholders.forEach(function (placeholder) {
+                    placeholder.classList.remove("focus");
+                });
+                errorContainer.innerHTML =
+                    '<span class="text-danger">Invalid email</span>';
+                return
+            }
+
+            loader.classList.remove('hidden')
+
+            axios.post('<%= authLink %>', {
+                    email: email,
+                    password: password
+                })
+                .then(function (response) {
+                    if (response.data && response.data.success === true) {
+                        form.classList.add('hidden')
+                        var account = document.getElementById('account')
+                        account.classList.remove('hidden')
+                        if (response.data.icon) {
+                            document.getElementById('icon').src =
+                                'https://webcull.com/repository/images/users/avatar/' + response.data
+                                .icon;
+                        }
+                        document.getElementById('name').innerText = response.data.user;
+                        document.getElementById('authLink').href = response.data.authLink;
+                    } else {
+                        if (response.data && response.data.reason) {
+                            response.data.reason.forEach(e => {
+                                var error = document.createElement('span');
+                                error.classList.add('text-danger');
+                                error.innerHTML = e;
+                                errorContainer.appendChild(error)
+                            })
+                        }
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error)
+                })
+                .finally(() => {
+                    loader.classList.toggle('hidden')
+
+                })
+        });
+    })();
+</script>
