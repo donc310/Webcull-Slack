@@ -13,9 +13,10 @@ const webcullEndpoints = {
   savetoken: 'api/savetoken',
   loadToken: 'api/loadtoken',
   authenticate: 'accounts',
+  addLink: 'bookmarks/index/acc',
 };
 module.exports = {
   endPoints: webcullEndpoints,
   scopes: slackScopes,
-  appHome: 'https://e65180f0f6f6.ngrok.io',
+  appHome: 'https://35671db1ab11.ngrok.io',
 };

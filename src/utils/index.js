@@ -1,5 +1,6 @@
 const { loadToken, addToken } = require('../api/webcull');
-
+const tokenizer = require('string-tokenizer');
+const createUrlRegex = require('url-regex');
 /**
  *
  * @param {*} param0
@@ -23,10 +24,6 @@ async function storeTeamInfo(installation) {
     botId: installation.bot.id,
     botUserId: installation.bot.userId,
   };
-  const { data } = await loadToken(installation.team.id);
-  if (data.success === 'true') {
-    return true;
-  }
   const storeResponse = await addToken(
     installation.team.id,
     JSON.stringify(storeReq)
@@ -76,10 +73,25 @@ async function fetchInstallationInfo(key) {
 function generateKey(...keys) {
   return keys.join('_');
 }
+function arrayOrUndefined(data) {
+  if (typeof data === 'undefined' || Array.isArray(data)) {
+    return data;
+  }
+  return [data];
+}
+function parseUrl(text) {
+  const tokens = tokenizer()
+    .input(text)
+    .token('url', createUrlRegex())
+    .resolve();
+  return arrayOrUndefined(tokens.url);
+}
 module.exports = {
   authorizer,
   fetchInstallationInfo,
   storeUserInfo,
   storeTeamInfo,
   generateKey,
+  arrayOrUndefined,
+  parseUrl,
 };

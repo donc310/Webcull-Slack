@@ -1,12 +1,11 @@
 const { fetchInstallationInfo } = require('../utils');
-const tokenizer = require('string-tokenizer');
-const createUrlRegex = require('url-regex');
+const { parseUrl } = require('../utils');
 
+/**
+ *
+ * @param {*} param0
+ */
 async function authWebcull({ payload, context, next, client }) {
-  if (payload.type && payload.type === 'button') {
-    await next();
-    return;
-  }
   let webcullUser, slackUser, token, channel;
   try {
     slackUser = payload.command ? payload.user_id : payload.user;
@@ -16,6 +15,11 @@ async function authWebcull({ payload, context, next, client }) {
       : context
       ? context.channel
       : null;
+    if (payload.type && payload.type === 'button') {
+      context.user = {};
+      (context.user.slackUser = slackUser), await next();
+      return;
+    }
     webcullUser = await fetchInstallationInfo(slackUser);
     if (!webcullUser) {
       token &&
@@ -28,7 +32,6 @@ async function authWebcull({ payload, context, next, client }) {
         }));
       return;
     }
-    context.user = webcullUser.webcullAuth;
   } catch (error) {
     token &&
       channel &&
@@ -40,10 +43,20 @@ async function authWebcull({ payload, context, next, client }) {
       }));
     throw error;
   }
+  context.user = webcullUser.webcullAuth;
+  context.user.slackUser = slackUser;
   await next();
 }
-// eslint-disable-next-line no-unused-vars
+/**
+ *
+ * @param {*} args
+ */
+
 function logger(args) {
+  if (process.env.SLACK_DEBUG_MODE === '0') {
+    args.next();
+    return;
+  }
   const copiedArgs = JSON.parse(JSON.stringify(args));
   copiedArgs.context.botToken = 'xoxb-***';
   if (copiedArgs.context.userToken) {
@@ -58,29 +71,52 @@ function logger(args) {
   );
   args.next();
 }
+/**
+ *
+ * @param {*} param0
+ */
 async function noBotMessages({ message, next }) {
   if (!message.subtype || message.subtype !== 'bot_message') {
     await next();
   }
 }
-
-function arrayOrUndefined(data) {
-  if (typeof data === 'undefined' || Array.isArray(data)) {
-    return data;
+const slackLink = /<(?<type>[@#!])?(?<link>[^>|]+)(?:\|(?<label>[^>]+))?>/;
+async function directMention({ message, context, next }) {
+  if (context.botUserId === undefined) {
+    throw new Error(
+      'Cannot match direct mentions of the app without a bot user ID. Ensure authorize callback returns a botUserId.',
+    );
   }
-  return [data];
+  if (message.text === undefined) {
+    return;
+  }
+  const text = message.text.trim();
+  const matches = slackLink.exec(text);
+  if (
+    matches === null ||
+    matches.index !== 0 ||
+    matches.groups === undefined ||
+    matches.groups.type !== '@' ||
+    matches.groups.link !== context.botUserId
+  ) {
+    return;
+  }
+  message.processedText = text.replace(slackLink, '').trim();
+  await next();
 }
 
-function commandParser({ command, context, next }) {
-  const tokens = tokenizer()
-    .input(command.text)
-    .token('url', createUrlRegex())
-    .resolve();
-  context.parsedUrl = arrayOrUndefined(tokens.url);
-  next();
+/**
+ *
+ * @param {*} param0
+ */
+async function commandParser({ command, context, next }) {
+  const tokens = parseUrl(command.text);
+  context.parsedUrl = tokens;
+  await next();
 }
 module.exports = {
-  middleWares: [authWebcull],
+  middleWares: [authWebcull, logger],
   noBotMessages,
   commandParser,
+  directMention,
 };

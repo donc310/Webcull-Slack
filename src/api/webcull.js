@@ -43,6 +43,11 @@ async function loadToken(key) {
 async function deleteToken() {
   return request();
 }
+/**
+ *
+ * @param {*} key
+ * @param {*} value
+ */
 async function addToken(key, value) {
   return request.post(
     config.endPoints.savetoken,
@@ -55,9 +60,28 @@ async function addToken(key, value) {
     Reqconfig,
   );
 }
+/**
+ *
+ * @param {Object} args
+ */
+async function addLinkOrStack(args) {
+  return request.post(
+    config.endPoints.addLink + `/${args.key}/`,
+    qs.stringify({
+      token: args.token,
+      value: args.value,
+      proc: 'new',
+      parent_id: 0,
+    }),
+    Reqconfig,
+  );
+}
+async function listBookmarksStacks() {}
 module.exports = {
   addToken,
   deleteToken,
   loadToken,
   authenticate,
+  addLinkOrStack,
+  listBookmarksStacks,
 };

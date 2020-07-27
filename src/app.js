@@ -1,9 +1,18 @@
 require('dotenv-flow').config();
 const { App } = require('@slack/bolt');
 const { receiver } = require('./receiver');
-const { authorizer } = require('./utils');
-const { middleWares, noBotMessages, commandParser } = require('./middleware');
-const { messages } = require('./model/message');
+const { authorizer, parseUrl } = require('./utils');
+const {
+  middleWares,
+  noBotMessages,
+  commandParser,
+  directMention,
+} = require('./middleware');
+const { views } = require('./model/views');
+const { getCommandHandler } = require('./commands');
+const { help } = require('./model/message');
+const helpCommand = require('./commands/help');
+
 const app = new App({
   receiver,
   authorize: authorizer,
@@ -22,34 +31,50 @@ app.command(
   async ({ command, context, ack, respond }) => {
     try {
       await ack();
-      console.log(context);
-      await respond(`${command.command}`);
+      const msg = command.text.trim();
+      if (!msg) {
+        return helpCommand.handler(command, context, respond);
+      }
+      const cmdHandler = getCommandHandler(msg);
+      if (cmdHandler) {
+        return cmdHandler.handler(command, context, respond);
+      } else {
+        const defaultHandler = getCommandHandler('add');
+        return defaultHandler.handler(command, context, respond);
+      }
     } catch (error) {
       console.log(error);
     }
   },
 );
-app.message(noBotMessages, async ({ message, say, context }) => {
-  await say({
-    blocks: [
-      {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: `Hey there <@${message.user}>!`,
-        },
-        accessory: {
-          type: 'button',
-          text: {
-            type: 'plain_text',
-            text: 'Click Me',
-          },
-          action_id: 'button_click',
-        },
-      },
-    ],
-    text: `Hey there <@${message.user}>!`,
-  });
+app.message(noBotMessages, directMention, async ({ message, context }) => {
+  try {
+    const msg = message.processedText;
+    const cmdHandler = getCommandHandler(msg);
+    if (!msg || (cmdHandler && cmdHandler.name === 'help')) {
+      await app.client.chat.postEphemeral({
+        token: context.botToken,
+        channel: message.channel,
+        user: message.user,
+        text: `Hey there <@${message.user}>!`,
+        attachments: help(context).attachments,
+      });
+      return;
+    }
+    const defaultHandler = getCommandHandler('add');
+    context.parsedUrl = parseUrl(msg);
+    defaultHandler.handler({ text: msg }, context, async function (res) {
+      const defaults = {
+        token: context.botToken,
+        channel: message.channel,
+        user: message.user,
+      };
+      const response = Object.assign(defaults, res);
+      await app.client.chat.postEphemeral(response);
+    });
+  } catch (error) {
+    console.log(error);
+  }
 });
 app.action('button_click', async ({ body, ack, say }) => {
   await ack();
@@ -63,7 +88,7 @@ app.event('app_home_opened', async ({ event, context }) => {
     await app.client.views.publish({
       token: context.botToken,
       user_id: event.user,
-      view: messages.HOME,
+      view: views.HOME,
     });
   } catch (error) {
     console.error(error);
