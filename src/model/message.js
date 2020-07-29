@@ -1,57 +1,7 @@
-const messages = {};
-messages['HELP'] = {
-  text:
-    ':wave: Hi @ <@U016WNBD4BY>, Welcome to the WebCull app on Slack. You can quickly create or manage your bookmarks.\n These are the available commands:',
-  attachments: [
-    {
-      color: '#2196f3',
-      blocks: [
-        {
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text:
-              '`/webcull add [url|stack]` creates a new bookmark \n' +
-              '`/webcull list ` returns a list of bookmarks',
-          },
-        },
-        {
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text: '`/webcull help ` shows this help command. \n',
-          },
-        },
-      ],
-    },
-  ],
-};
-messages['ADD'] = {
-  blocks: [
-    {
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text:
-          'You have a new request:\n*<google.com|Fred Enriquez - Time Off request>*',
-      },
-    },
-    {
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text:
-          '*Type:*\nPaid time off\n*When:*\nAug 10-Aug 13\n*Hours:* 16.0 (2 days)\n*Remaining balance:* 32.0 hours (4 days)\n*Comments:* "Family in town, going camping!"',
-      },
-      accessory: {
-        type: 'image',
-        image_url:
-          'https://api.slack.com/img/blocks/bkb_template_images/approvalsNewDevice.png',
-        alt_text: 'computer thumbnail',
-      },
-    },
-  ],
-};
+/**
+ *
+ * @param {*} context
+ */
 function composeHelpMsg(context) {
   const message = {
     text: `:wave: Hi @ <@${context.user.slackUser}>, Welcome to the WebCull app on Slack. You can quickly create or manage your bookmarks.\n These are the available commands:`,
@@ -81,6 +31,11 @@ function composeHelpMsg(context) {
   };
   return message;
 }
+/**
+ *
+ * @param {*} context
+ * @param {*} bookmark
+ */
 function composeBookmarkAddMsg(context, bookmark) {
   const message = {
     attachments: [
@@ -103,8 +58,35 @@ function composeBookmarkAddMsg(context, bookmark) {
   };
   return message;
 }
+/**
+ *
+ * @param {Object} context
+ * @param {Array} stackList
+ */
+function composeListMsg(context, stackList) {
+  const message = {
+    attachments: [],
+  };
+  message.attachments = stackList
+    .filter((entry) => entry.is_url === '1')
+    .map((entry) => {
+      return {
+        color: '#2196f3',
+        blocks: [
+          {
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              text: `*<${entry.value}|${entry.value}>*`,
+            },
+          },
+        ],
+      };
+    });
+  return message;
+}
 module.exports = {
   help: composeHelpMsg,
   add: composeBookmarkAddMsg,
-  messages,
+  list: composeListMsg,
 };

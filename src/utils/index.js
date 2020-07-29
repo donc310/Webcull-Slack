@@ -15,8 +15,7 @@ async function authorizer({ userId, teamId, enterpriseId }) {
 
 /**
  *
- * @param {*} installation
- * @param {*} installOptions
+ * @param {*} installationL
  */
 async function storeTeamInfo(installation) {
   const storeReq = {
@@ -26,7 +25,7 @@ async function storeTeamInfo(installation) {
   };
   const storeResponse = await addToken(
     installation.team.id,
-    JSON.stringify(storeReq)
+    JSON.stringify(storeReq),
   );
   if (storeResponse.data.success === 'true') {
     return true;
@@ -48,7 +47,7 @@ async function storeUserInfo(installation, installOptions) {
   };
   const response = await addToken(
     installation.user.id,
-    JSON.stringify(storeReq)
+    JSON.stringify(storeReq),
   );
   if (response.data.success === 'true') {
     return true;

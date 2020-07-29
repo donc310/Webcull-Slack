@@ -1,6 +1,7 @@
 const helpCommand = require('./help');
 const addCommand = require('./add');
-const commands = [helpCommand, addCommand];
+const listCommand = require('./list');
+const commands = [helpCommand, addCommand, listCommand];
 
 /**
  *

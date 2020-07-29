@@ -76,7 +76,20 @@ async function addLinkOrStack(args) {
     Reqconfig,
   );
 }
-async function listBookmarksStacks() {}
+/**
+ *
+ * @param {*} args
+ */
+async function listBookmarksStacks(args) {
+  return request.post(
+    config.endPoints.listStacks + `/${args.key}/`,
+    qs.stringify({
+      token: args.token,
+      proc: 'load',
+    }),
+    Reqconfig,
+  );
+}
 module.exports = {
   addToken,
   deleteToken,

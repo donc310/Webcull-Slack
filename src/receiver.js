@@ -92,7 +92,7 @@ receiver.router.post(
         reason: [String(error)],
       });
     }
-  }
+  },
 );
 receiver.router.get('/slack/install', async (req, res, next) => {
   try {

@@ -14,9 +14,10 @@ const webcullEndpoints = {
   loadToken: 'api/loadtoken',
   authenticate: 'accounts',
   addLink: 'bookmarks/index/acc',
+  listStacks: 'bookmarks/index/acc',
 };
 module.exports = {
   endPoints: webcullEndpoints,
   scopes: slackScopes,
-  appHome: 'https://35671db1ab11.ngrok.io',
+  appHome: 'https://0e7175c26ffc.ngrok.io',
 };
