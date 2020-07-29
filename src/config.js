@@ -19,5 +19,5 @@ const webcullEndpoints = {
 module.exports = {
   endPoints: webcullEndpoints,
   scopes: slackScopes,
-  appHome: 'https://0e7175c26ffc.ngrok.io',
+  appHome: 'https://app-webcull.herokuapp.com',
 };
